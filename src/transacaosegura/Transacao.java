@@ -1,6 +1,7 @@
 package transacaosegura;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 public class Transacao {
@@ -37,13 +38,14 @@ public class Transacao {
 
     @Override
     public String toString() {
-        return "Transaction{" +
-                "id='" + id + '\'' +
-                ", idUser='" + idUser + '\'' +
-                ", valor=" + String.format("%.2f", valor) +
-                ", status=" + status +
-                ", dataHora=" + dataHora +
-                ", estabelecimento=" + estabelecimento.getNome() +
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+        String dataHoraFormatada = dataHora.format(dtf);
+        return "Transação{" +
+                "Número:'" + id + '\'' +
+                ", valor: R$" + String.format("%.2f", valor) +
+                ", status:" + status +
+                ", dataHora:" + dataHoraFormatada +
+                ", estabelecimento:" + estabelecimento.getNome() +
                 '}';
     }
 }

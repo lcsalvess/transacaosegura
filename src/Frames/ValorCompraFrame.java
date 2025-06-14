@@ -74,5 +74,6 @@ public class ValorCompraFrame extends JFrame {
         panel.add(continuarBtn);
 
         add(panel);
+        SwingUtilities.invokeLater(valorField::requestFocusInWindow);
     }
 }

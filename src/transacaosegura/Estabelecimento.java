@@ -23,9 +23,7 @@ public class Estabelecimento {
 
     @Override
     public String toString() {
-        return "Establishment{" +
-                "nome='" + nome + '\'' +
-                ", idMaquina='" + idMaquina + '\'' +
-                '}';
+        return "Estabelecimento{" +
+                "nome:'" + nome + '\'';
     }
 }

@@ -2,29 +2,21 @@ package Frames;
 
 import javax.swing.*;
 import java.awt.*;
-import java.net.InetAddress; // Para SystemInfo
-import java.net.UnknownHostException; // Para SystemInfo
 import transacaosegura.Estabelecimento;
+import transacaosegura.SystemInfo;
 import transacaosegura.Transacao;
 import transacaosegura.Usuario;
 
 public class ConfirmacaoFrame extends JFrame {
-    private Transacao transaction; // Vamos armazenar a transação aqui
+    private final Transacao transaction; // Vamos armazenar a transação aqui
 
     public ConfirmacaoFrame(Usuario user, double valorCompra) {
-        String nomeEstabelecimento;
-        try {
-            nomeEstabelecimento = InetAddress.getLocalHost().getHostName(); // Nome do computador como estabelecimento
-        } catch (UnknownHostException e) {
-            nomeEstabelecimento = "Nome do Computador Desconhecido";
-            System.err.println("Erro ao obter nome do host: " + e.getMessage());
-        }
-
+        String nomeEstabelecimento = SystemInfo.getNomeComputador();
         // Criamos uma instância de Estabelecimento. Em um sistema real, viria de um DB.
         Estabelecimento estabelecimento = new Estabelecimento(nomeEstabelecimento, "ID_MAQUINA_GERADO");
 
         // Criamos a transação com status PENDENTE inicialmente
-        // O ID da transação agora é gerado dentro da própria classe Transacao
+        // O "id" da transação agora é gerado dentro da própria classe Transacao
         this.transaction = new Transacao(user.getId(), valorCompra, estabelecimento);
 
         String localizacao = "Localização aproximada não disponível"; // Placeholder por enquanto
@@ -62,34 +54,6 @@ public class ConfirmacaoFrame extends JFrame {
         localizacaoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 
-        JPanel botoesPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 30, 10));
-        JButton btnReconheco = new JButton("Reconheço");
-        JButton btnNaoReconheco = new JButton("Não Reconheço");
-
-        // --- Adição da lógica de ação para os botões ---
-        btnReconheco.addActionListener(e -> {
-            // Define o status da transação como APROVADA
-            transaction.setStatus(Transacao.Status.APROVADA);
-            // Exibe a mensagem de sucesso
-            JOptionPane.showMessageDialog(this, "Compra realizada com sucesso!\nDetalhes: " + transaction.toString(), "Sucesso!", JOptionPane.INFORMATION_MESSAGE);
-            dispose(); // Fecha a janela atual
-            System.exit(0); // Opcional: fecha o aplicativo inteiro. Você pode mudar para abrir outra tela.
-        });
-
-        btnNaoReconheco.addActionListener(e -> {
-            // Define o status da transação como RECUSADA
-            transaction.setStatus(Transacao.Status.RECUSADA);
-            // Exibe a mensagem de recusa
-            JOptionPane.showMessageDialog(this, "Compra recusada!\nDetalhes: " + transaction.toString(), "Atenção!", JOptionPane.WARNING_MESSAGE);
-            dispose(); // Fecha a janela atual
-            System.exit(0); // Opcional: fecha o aplicativo inteiro. Você pode mudar para abrir outra tela.
-        });
-        // --- Fim da adição da lógica ---
-
-        botoesPanel.add(btnReconheco);
-        botoesPanel.add(btnNaoReconheco);
-        botoesPanel.setOpaque(false);
-
         mainPanel.add(celularLabel);
         mainPanel.add(Box.createVerticalStrut(10));
         mainPanel.add(nomeLabel);
@@ -98,11 +62,38 @@ public class ConfirmacaoFrame extends JFrame {
         mainPanel.add(lojaLabel);
         mainPanel.add(localizacaoLabel);
         mainPanel.add(Box.createVerticalStrut(30));
-        mainPanel.add(botoesPanel);
+        mainPanel.add(criarPainelBotoes());
 
         add(mainPanel);
     }
 
+    private JPanel criarPainelBotoes() {
+        JPanel botoesPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 30, 10));
+        JButton btnReconheco = new JButton("Reconheço");
+        JButton btnNaoReconheco = new JButton("Não Reconheço");
+
+        // Ação do botão "Reconheço"
+        btnReconheco.addActionListener(e -> {
+            transaction.setStatus(Transacao.Status.APROVADA);
+            JOptionPane.showMessageDialog(this, "Compra realizada com sucesso!\nDetalhes: " + transaction, "Sucesso!", JOptionPane.INFORMATION_MESSAGE);
+            dispose();
+            System.exit(0);
+        });
+
+        // Ação do botão "Não Reconheço"
+        btnNaoReconheco.addActionListener(e -> {
+            transaction.setStatus(Transacao.Status.RECUSADA);
+            JOptionPane.showMessageDialog(this, "Compra recusada!\nDetalhes: " + transaction, "Atenção!", JOptionPane.WARNING_MESSAGE);
+            dispose();
+            System.exit(0);
+        });
+
+        botoesPanel.add(btnReconheco);
+        botoesPanel.add(btnNaoReconheco);
+        botoesPanel.setOpaque(false); // Mantém o fundo transparente
+
+        return botoesPanel;
+    }
     // Painel com cantos arredondados (mantido como está)
     static class RoundedPanel extends JPanel {
         @Override
