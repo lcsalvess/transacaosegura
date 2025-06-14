@@ -15,10 +15,8 @@ public class PessoaFisica extends Usuario { // PessoaFisica "é um" Usuario
     public String toString() {
         // Reutiliza o toString da superclasse e adiciona o CPF
         return "PessoaFisica{" +
-               "id='" + getId() + '\'' + // Reutiliza o ID do Usuario
-               ", nome='" + getNome() + '\'' + // Reutiliza o nome do Usuario
+               "nome='" + getNome() + '\'' + // Reutiliza o nome do Usuario
                ", numeroCelular='" + getNumeroCelular() + '\'' + // Reutiliza o celular do Usuario
-               ", ativo=" + isAtivo() + // Reutiliza o status ativo do Usuario
                ", cpf='" + cpf + '\'' +
                '}';
     }
