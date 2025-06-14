@@ -3,7 +3,7 @@ package transacaosegura;
 import java.util.UUID;
 
 public class Usuario {
-    private String id;
+    private final String id;
     private String nome;
     private String numeroCelular;
     private boolean ativo;
@@ -26,10 +26,8 @@ public class Usuario {
     @Override
     public String toString() {
         return "User{" +
-                "id='" + id + '\'' +
-                ", nome='" + nome + '\'' +
+                "nome='" + nome + '\'' +
                 ", numeroCelular='" + numeroCelular + '\'' +
-                ", ativo=" + ativo +
                 '}';
     }
 }

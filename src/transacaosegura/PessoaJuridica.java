@@ -19,10 +19,8 @@ public class PessoaJuridica extends Usuario { // PessoaJuridica "é um" Usuario
     public String toString() {
         // Reutiliza o toString da superclasse e adiciona CNPJ e Razão Social
         return "PessoaJuridica{" +
-               "id='" + getId() + '\'' +
-               ", nome='" + getNome() + '\'' +
+               "nome='" + getNome() + '\'' +
                ", numeroCelular='" + getNumeroCelular() + '\'' +
-               ", ativo=" + isAtivo() +
                ", cnpj='" + cnpj + '\'' +
                ", razaoSocial='" + razaoSocial + '\'' +
                '}';
