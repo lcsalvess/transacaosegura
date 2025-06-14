@@ -1,21 +1,20 @@
 package model;
 
-import java.util.UUID;
-
 public class Usuario {
-    private final String id;
+    private int id;
     private String nome;
     private String numeroCelular;
     private boolean ativo;
 
     public Usuario(String nome, String numeroCelular) {
-        this.id = UUID.randomUUID().toString(); // ID aleatório e único
+        this.id = 0; // ID aleatório e único
         this.nome = nome;
         this.numeroCelular = numeroCelular;
         this.ativo = true;
     }
 
-    public String getId() { return id; }
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
     public String getNome() { return nome; }
     public void setNome(String nome) { this.nome = nome; }
     public String getNumeroCelular() { return numeroCelular; }

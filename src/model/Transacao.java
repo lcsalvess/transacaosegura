@@ -8,13 +8,13 @@ public class Transacao {
     public enum Status { PENDENTE, APROVADA, RECUSADA }
 
     private final String id;
-    private final String idUser;
+    private final int idUser;
     private final double valor;
     private Status status;
     private final LocalDateTime dataHora;
     private final Estabelecimento estabelecimento;
 
-    public Transacao(String idUser, double valor, Estabelecimento estabelecimento) {
+    public Transacao(int idUser, double valor, Estabelecimento estabelecimento) {
         this.id = UUID.randomUUID().toString();
         this.idUser = idUser;
         this.valor = valor;
@@ -24,7 +24,7 @@ public class Transacao {
     }
 
     public String getId() { return id; }
-    public String getIdUser() { return idUser; }
+    public int getIdUser() { return idUser; }
     public double getValor() { return valor; }
     public Status getStatus() { return status; }
     public void setStatus(Status status) { this.status = status; }
