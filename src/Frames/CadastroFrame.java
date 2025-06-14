@@ -1,6 +1,7 @@
 package Frames;
 
 import javax.swing.*;
+import javax.swing.text.MaskFormatter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -70,14 +71,24 @@ public class CadastroFrame extends JFrame {
         // --- Painel para campos de Pessoa Física (inicialmente visível) ---
         pessoaFisicaPanel = new JPanel(new GridLayout(1, 2, 5, 5));
         pessoaFisicaPanel.add(new JLabel("CPF:"));
-        cpfField = new JTextField();
+        // cpfField = new JTextField();
+        try {
+            cpfField = new JFormattedTextField(new MaskFormatter("###.###.###-##"));
+        } catch (java.text.ParseException e) {
+            JOptionPane.showMessageDialog(null, "Erro ao aplicar máscara de CPF!", "Erro", JOptionPane.ERROR_MESSAGE);
+        }
         pessoaFisicaPanel.add(cpfField);
         mainPanel.add(pessoaFisicaPanel);
 
         // --- Painel para campos de Pessoa Jurídica (inicialmente oculto) ---
         pessoaJuridicaPanel = new JPanel(new GridLayout(2, 2, 5, 5));
         pessoaJuridicaPanel.add(new JLabel("CNPJ:"));
-        cnpjField = new JTextField();
+        //cnpjField = new JTextField();
+        try {
+            cnpjField = new JFormattedTextField(new MaskFormatter("##.###.###/####-##"));
+        } catch (java.text.ParseException e) {
+            JOptionPane.showMessageDialog(null, "Erro ao aplicar máscara de CNPJ!", "Erro", JOptionPane.ERROR_MESSAGE);
+        }
         pessoaJuridicaPanel.add(cnpjField);
         pessoaJuridicaPanel.add(new JLabel("Razão Social:"));
         razaoSocialField = new JTextField();
