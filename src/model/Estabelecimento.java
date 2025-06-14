@@ -3,23 +3,27 @@ import java.util.UUID;
 
 public class Estabelecimento {
     private String nome;
-    private final String idMaquina;
+    private Integer idMaquina;
 
-    public Estabelecimento(String nome, String idMaquina) {
+    public Estabelecimento(String nome) {
         if (nome == null || nome.isEmpty()) {
             throw new IllegalArgumentException("Nome não pode ser vazio");
         }
         this.nome = nome;
-        this.idMaquina = (idMaquina == null || idMaquina.isEmpty())
-                //if
-                ? UUID.randomUUID().toString()
-                //else
-                : idMaquina;
+        this.idMaquina = null; // id ainda não gerado
     }
 
+    public Estabelecimento(String nome, Integer idMaquina) {
+        this.nome = nome;
+        this.idMaquina = idMaquina;
+    }
+
+    public void setIdMaquina(Integer idMaquina) {
+        this.idMaquina = idMaquina;
+    }
     public String getNome() { return nome; }
     public void setNome(String nome) { this.nome = nome; }
-    public String getIdMaquina() { return idMaquina; }
+    public Integer getIdMaquina() { return idMaquina; }
 
     @Override
     public String toString() {

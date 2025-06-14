@@ -37,7 +37,7 @@ public class ValorCompraFrame extends JFrame {
 
                 // Primeiro, vamos criar o Estabelecimento (que pode ser mockado aqui)
                 String nomeEstabelecimento = SystemInfo.getNomeComputador();
-                Estabelecimento estabelecimento = new Estabelecimento(nomeEstabelecimento, "ID_MAQUINA_FICTICIO");
+                Estabelecimento estabelecimento = new Estabelecimento(nomeEstabelecimento);
 
                 // Agora, criamos a Transação
                 Transacao novaTransacao = new Transacao(user.getId(), valor, estabelecimento);

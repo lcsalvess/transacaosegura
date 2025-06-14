@@ -5,7 +5,7 @@ import model.PessoaJuridica;
 import java.sql.*;
 
 public class PessoaJuridicaDAO {
-    private final Connection conexao;
+    private Connection conexao;
 
     public PessoaJuridicaDAO(Connection conexao) {
         this.conexao = conexao;

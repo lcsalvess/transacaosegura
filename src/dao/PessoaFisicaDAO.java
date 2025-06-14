@@ -7,7 +7,7 @@ import java.sql.*;
 public class PessoaFisicaDAO {
     private final Connection conexao;
 
-    public PessoaFisicaDAO(Connection conexao) {
+    public PessoaFisicaDAO(Connection conexao) throws SQLException {
         this.conexao = conexao;
     }
 

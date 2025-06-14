@@ -13,7 +13,7 @@ public class ConfirmacaoFrame extends JFrame {
     public ConfirmacaoFrame(Usuario user, double valorCompra) {
         String nomeEstabelecimento = SystemInfo.getNomeComputador();
         // Criamos uma instância de Estabelecimento. Em um sistema real, viria de um DB.
-        Estabelecimento estabelecimento = new Estabelecimento(nomeEstabelecimento, "ID_MAQUINA_GERADO");
+        Estabelecimento estabelecimento = new Estabelecimento(nomeEstabelecimento);
 
         // Criamos a transação com status PENDENTE inicialmente
         // O "id" da transação agora é gerado dentro da própria classe Transacao

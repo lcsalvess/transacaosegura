@@ -5,14 +5,18 @@ import javax.swing.text.AbstractDocument;
 import javax.swing.text.MaskFormatter;
 import java.awt.*;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 import model.PessoaFisica;
 import model.PessoaJuridica;
-import model.Usuario;
+import service.PessoaFisicaService;
+import service.PessoaJuridicaService;
 import util.RazaoSocialFilter;
 import util.SomenteLetrasFilter;
 
 public class CadastroFrame extends JFrame {
+    private final Connection conexao;
     private final JTextField nomeField;
     private final JTextField celularField;
 
@@ -29,57 +33,61 @@ public class CadastroFrame extends JFrame {
     private final JPanel pessoaFisicaPanel;
     private final JPanel pessoaJuridicaPanel;
 
-    public CadastroFrame() {
+    //Service
+    private final PessoaFisicaService pfService;
+    private final PessoaJuridicaService pjService;
+    public CadastroFrame(Connection conexao) throws SQLException {
+        this.conexao = conexao;
+
+        // Inicializa os services com a conexão
+        this.pfService = new PessoaFisicaService(conexao);
+        this.pjService = new PessoaJuridicaService(conexao);
+
         setTitle("Cadastro de Usuário");
-        setSize(400, 350); // Aumenta o tamanho para acomodar os novos campos
+        setSize(400, 350);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
         JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS)); // Layout vertical
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15)); // Margem interna
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
-        // --- Painel para Nome e Celular ---
         JPanel commonPanel = new JPanel(new GridLayout(2, 2, 5, 5));
         commonPanel.add(new JLabel("Nome:"));
         nomeField = new JTextField();
         ((AbstractDocument) nomeField.getDocument()).setDocumentFilter(new SomenteLetrasFilter());
         commonPanel.add(nomeField);
+
         commonPanel.add(new JLabel("Número Celular:"));
         celularField = criarCampoComMascara("(##) #####-####");
         commonPanel.add(celularField);
+
         mainPanel.add(commonPanel);
+        mainPanel.add(Box.createVerticalStrut(15));
 
-        mainPanel.add(Box.createVerticalStrut(15)); // Espaçamento
-
-        // --- Painel para escolha de Tipo (Pessoa Física / Jurídica) ---
         JPanel typeSelectionPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         typeSelectionPanel.add(new JLabel("Tipo de Usuário:"));
 
         rbPessoaFisica = new JRadioButton("Pessoa Física");
         rbPessoaJuridica = new JRadioButton("Pessoa Jurídica");
 
-        ButtonGroup group = new ButtonGroup(); // Garante que apenas um pode ser selecionado
+        ButtonGroup group = new ButtonGroup();
         group.add(rbPessoaFisica);
         group.add(rbPessoaJuridica);
 
-        // Seleciona Pessoa Física por padrão
         rbPessoaFisica.setSelected(true);
 
         typeSelectionPanel.add(rbPessoaFisica);
         typeSelectionPanel.add(rbPessoaJuridica);
         mainPanel.add(typeSelectionPanel);
+        mainPanel.add(Box.createVerticalStrut(10));
 
-        mainPanel.add(Box.createVerticalStrut(10)); // Espaçamento
-
-        // --- Painel para campos de Pessoa Física (inicialmente visível) ---
         pessoaFisicaPanel = new JPanel(new GridLayout(1, 2, 5, 5));
         pessoaFisicaPanel.add(new JLabel("CPF:"));
         cpfField = criarCampoComMascara("###.###.###-##");
         pessoaFisicaPanel.add(cpfField);
         mainPanel.add(pessoaFisicaPanel);
 
-        // --- Painel para campos de Pessoa Jurídica (inicialmente oculto) ---
         pessoaJuridicaPanel = new JPanel(new GridLayout(2, 2, 5, 5));
         pessoaJuridicaPanel.add(new JLabel("CNPJ:"));
         cnpjField = criarCampoComMascara("##.###.###/####-##");
@@ -88,10 +96,9 @@ public class CadastroFrame extends JFrame {
         razaoSocialField = new JTextField();
         ((AbstractDocument) razaoSocialField.getDocument()).setDocumentFilter(new RazaoSocialFilter());
         pessoaJuridicaPanel.add(razaoSocialField);
-        pessoaJuridicaPanel.setVisible(false); // Esconde no início
+        pessoaJuridicaPanel.setVisible(false);
         mainPanel.add(pessoaJuridicaPanel);
 
-        // --- Listener para os botões de rádio (mostrar/esconder campos) ---
         ActionListener radioListener = e -> {
             if (rbPessoaFisica.isSelected()) {
                 pessoaFisicaPanel.setVisible(true);
@@ -100,61 +107,68 @@ public class CadastroFrame extends JFrame {
                 pessoaFisicaPanel.setVisible(false);
                 pessoaJuridicaPanel.setVisible(true);
             }
-            pack(); //Redimensiona a janela para se ajustar aos componentes
+            pack();
         };
         rbPessoaFisica.addActionListener(radioListener);
         rbPessoaJuridica.addActionListener(radioListener);
 
+        mainPanel.add(Box.createVerticalStrut(20));
 
-        mainPanel.add(Box.createVerticalStrut(20)); // Espaçamento
-
-        // --- Botão Cadastrar ---
         JButton cadastrarBtn = new JButton("Cadastrar");
-        cadastrarBtn.setAlignmentX(Component.CENTER_ALIGNMENT); // Centraliza o botão
+        cadastrarBtn.setAlignmentX(Component.CENTER_ALIGNMENT);
         mainPanel.add(cadastrarBtn);
 
-        add(mainPanel); // Adiciona o painel principal ao frame
-
-        // Ajusta o tamanho inicial da janela
+        add(mainPanel);
         pack();
 
-
-        // --- Ação do botão Cadastrar ---
         cadastrarBtn.addActionListener(e -> {
-            String nome = nomeField.getText().trim();
-            String celular = celularField.getText().replaceAll("\\D", "");
-
-            if (nome.isEmpty() || celular.length() != 11) {
-                JOptionPane.showMessageDialog(null, "Nome e número de celular são obrigatórios", "Erro", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            if (rbPessoaFisica.isSelected()) {
-                String cpf = cpfField.getText().replaceAll("\\D", "");
-                if (cpf.length() != 11) {
-                    JOptionPane.showMessageDialog(null, "CPF deve conter 11 dígitos!", "Erro", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-                Usuario user = new PessoaFisica(nome, celular, cpf);
-                JOptionPane.showMessageDialog(null, "Usuário criado com sucesso!\n" + user);
-                dispose();
-                new ValorCompraFrame(user).setVisible(true);
-            } else {
-                String cnpj = cnpjField.getText().replaceAll("\\D", "");
-                String razaoSocial = razaoSocialField.getText().trim();
-                if (cnpj.length() != 14 || razaoSocial.isEmpty()) {
-                    JOptionPane.showMessageDialog(null, "CNPJ deve conter 14 dígitos e Razão Social é obrigatória", "Erro", JOptionPane.ERROR_MESSAGE);
-                    return;
-                }
-                Usuario user = new PessoaJuridica(nome, celular, cnpj, razaoSocial);
-                JOptionPane.showMessageDialog(null, "Usuário criado com sucesso!\n" + user);
-                dispose();
-                new ValorCompraFrame(user).setVisible(true);
+            try {
+                cadastrarUsuario();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Erro ao cadastrar usuário: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
             }
         });
     }
 
-    //Metodo para criar campo com máscara
+    private void cadastrarUsuario() throws Exception {
+        String nome = nomeField.getText().trim();
+        String celular = celularField.getText().replaceAll("\\D", "");
+
+        if (nome.isEmpty() || celular.length() != 11) {
+            JOptionPane.showMessageDialog(this, "Nome e número de celular são obrigatórios e devem estar corretos.", "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        if (rbPessoaFisica.isSelected()) {
+            String cpf = cpfField.getText().replaceAll("\\D", "");
+            if (cpf.length() != 11) {
+                JOptionPane.showMessageDialog(this, "CPF deve conter 11 dígitos!", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            PessoaFisica pf = new PessoaFisica(nome, celular, cpf);
+            pfService.salvar(pf);
+
+            JOptionPane.showMessageDialog(this, "Pessoa Física cadastrada com sucesso!\n" + pf);
+        } else {
+            String cnpj = cnpjField.getText().replaceAll("\\D", "");
+            String razaoSocial = razaoSocialField.getText().trim();
+
+            if (cnpj.length() != 14 || razaoSocial.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "CNPJ deve conter 14 dígitos e Razão Social é obrigatória", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            PessoaJuridica pj = new PessoaJuridica(nome, celular, cnpj, razaoSocial);
+            pjService.salvarPessoaJuridica(pj);
+
+            JOptionPane.showMessageDialog(this, "Pessoa Jurídica cadastrada com sucesso!\n" + pj);
+        }
+
+        dispose();
+    }
+
     private JFormattedTextField criarCampoComMascara(String mascara) {
         try {
             MaskFormatter formatter = new MaskFormatter(mascara);
