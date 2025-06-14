@@ -1,6 +1,7 @@
 package Frames;
 
 import javax.swing.*;
+import javax.swing.text.AbstractDocument;
 import javax.swing.text.MaskFormatter;
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -8,6 +9,8 @@ import java.awt.event.ActionListener;
 import transacaosegura.PessoaFisica;
 import transacaosegura.PessoaJuridica;
 import transacaosegura.Usuario;
+import util.RazaoSocialFilter;
+import util.SomenteLetrasFilter;
 
 public class CadastroFrame extends JFrame {
     private final JTextField nomeField;
@@ -40,6 +43,7 @@ public class CadastroFrame extends JFrame {
         JPanel commonPanel = new JPanel(new GridLayout(2, 2, 5, 5));
         commonPanel.add(new JLabel("Nome:"));
         nomeField = new JTextField();
+        ((AbstractDocument) nomeField.getDocument()).setDocumentFilter(new SomenteLetrasFilter());
         commonPanel.add(nomeField);
         commonPanel.add(new JLabel("Número Celular:"));
         celularField = criarCampoComMascara("(##) #####-####");
@@ -82,6 +86,7 @@ public class CadastroFrame extends JFrame {
         pessoaJuridicaPanel.add(cnpjField);
         pessoaJuridicaPanel.add(new JLabel("Razão Social:"));
         razaoSocialField = new JTextField();
+        ((AbstractDocument) razaoSocialField.getDocument()).setDocumentFilter(new RazaoSocialFilter());
         pessoaJuridicaPanel.add(razaoSocialField);
         pessoaJuridicaPanel.setVisible(false); // Esconde no início
         mainPanel.add(pessoaJuridicaPanel);
