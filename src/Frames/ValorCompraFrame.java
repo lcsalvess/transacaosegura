@@ -2,13 +2,11 @@ package Frames;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import transacaosegura.Estabelecimento;
+import transacaosegura.SystemInfo;
 import transacaosegura.Transacao;
 import transacaosegura.Usuario;
+import util.FormatadorNumerico;
 
 public class ValorCompraFrame extends JFrame {
     public ValorCompraFrame(Usuario user) {
@@ -18,7 +16,17 @@ public class ValorCompraFrame extends JFrame {
         setLocationRelativeTo(null);
 
         JLabel label = new JLabel("Digite o valor da compra:");
-        JTextField valorField = new JTextField(10);
+        label.setHorizontalAlignment(SwingConstants.CENTER);
+
+       // Criação de painel com Label "R$" + campo de texto
+        JPanel valorPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JLabel prefixoReal = new JLabel("R$ ");
+        prefixoReal.setVerticalAlignment(SwingConstants.CENTER);
+        JFormattedTextField valorField = new JFormattedTextField(FormatadorNumerico.criarNumberFormatter());
+        valorField.setColumns(10); // Define o tamanho do campo de texto
+        valorPanel.add(prefixoReal);
+        valorPanel.add(valorField);
+
         JButton continuarBtn = new JButton("Continuar");
 
         continuarBtn.addActionListener(e -> {
@@ -28,13 +36,7 @@ public class ValorCompraFrame extends JFrame {
                 // --- INÍCIO DA LÓGICA REVISADA ---
 
                 // Primeiro, vamos criar o Estabelecimento (que pode ser mockado aqui)
-                String nomeEstabelecimento;
-                try {
-                    nomeEstabelecimento = InetAddress.getLocalHost().getHostName();
-                } catch (UnknownHostException exHost) {
-                    nomeEstabelecimento = "Nome do Computador Desconhecido";
-                    System.err.println("Erro ao obter nome do host: " + exHost.getMessage());
-                }
+                String nomeEstabelecimento = SystemInfo.getNomeComputador();
                 Estabelecimento estabelecimento = new Estabelecimento(nomeEstabelecimento, "ID_MAQUINA_FICTICIO");
 
                 // Agora, criamos a Transação
@@ -68,7 +70,7 @@ public class ValorCompraFrame extends JFrame {
         JPanel panel = new JPanel(new GridLayout(3, 1, 10, 10));
         panel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
         panel.add(label);
-        panel.add(valorField);
+        panel.add(valorPanel);
         panel.add(continuarBtn);
 
         add(panel);

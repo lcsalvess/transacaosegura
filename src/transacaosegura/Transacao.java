@@ -6,12 +6,12 @@ import java.util.UUID;
 public class Transacao {
     public enum Status { PENDENTE, APROVADA, RECUSADA }
 
-    private String id;
-    private String idUser;
-    private double valor;
+    private final String id;
+    private final String idUser;
+    private final double valor;
     private Status status;
-    private LocalDateTime dataHora;
-    private Estabelecimento estabelecimento;
+    private final LocalDateTime dataHora;
+    private final Estabelecimento estabelecimento;
 
     public Transacao(String idUser, double valor, Estabelecimento estabelecimento) {
         this.id = UUID.randomUUID().toString();
