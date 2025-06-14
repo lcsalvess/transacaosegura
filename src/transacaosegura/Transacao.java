@@ -1,0 +1,49 @@
+package transacaosegura;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+public class Transacao {
+    public enum Status { PENDENTE, APROVADA, RECUSADA }
+
+    private String id;
+    private String idUser;
+    private double valor;
+    private Status status;
+    private LocalDateTime dataHora;
+    private Estabelecimento estabelecimento;
+
+    public Transacao(String idUser, double valor, Estabelecimento estabelecimento) {
+        this.id = UUID.randomUUID().toString();
+        this.idUser = idUser;
+        this.valor = valor;
+        this.status = Status.PENDENTE; // A transação começa como PENDENTE
+        this.dataHora = LocalDateTime.now();
+        this.estabelecimento = estabelecimento;
+    }
+
+    public String getId() { return id; }
+    public String getIdUser() { return idUser; }
+    public double getValor() { return valor; }
+    public Status getStatus() { return status; }
+    public void setStatus(Status status) { this.status = status; }
+    public LocalDateTime getDataHora() { return dataHora; }
+    public Estabelecimento getEstabelecimento() { return estabelecimento; }
+
+    // --- NOVO MÉTODO PARA VERIFICAR SE A CONFIRMAÇÃO É NECESSÁRIA ---
+    public boolean isConfirmacaoNecessaria() {
+        return this.valor > 50.00; // A regra de negócio está aqui
+    }
+
+    @Override
+    public String toString() {
+        return "Transaction{" +
+                "id='" + id + '\'' +
+                ", idUser='" + idUser + '\'' +
+                ", valor=" + String.format("%.2f", valor) +
+                ", status=" + status +
+                ", dataHora=" + dataHora +
+                ", estabelecimento=" + estabelecimento.getNome() +
+                '}';
+    }
+}
