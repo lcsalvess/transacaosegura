@@ -1,4 +1,4 @@
-package transacaosegura;
+package model;
 
 public class PessoaJuridica extends Usuario { // PessoaJuridica "é um" Usuario
     private String cnpj;

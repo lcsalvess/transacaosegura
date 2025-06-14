@@ -1,4 +1,4 @@
-package Frames;
+package frames;
 
 import javax.swing.*;
 import javax.swing.text.AbstractDocument;
@@ -6,9 +6,9 @@ import javax.swing.text.MaskFormatter;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
-import transacaosegura.PessoaFisica;
-import transacaosegura.PessoaJuridica;
-import transacaosegura.Usuario;
+import model.PessoaFisica;
+import model.PessoaJuridica;
+import model.Usuario;
 import util.RazaoSocialFilter;
 import util.SomenteLetrasFilter;
 

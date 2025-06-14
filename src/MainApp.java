@@ -1,6 +1,4 @@
-package transacaosegura;
-
-import Frames.CadastroFrame;
+import frames.CadastroFrame;
 import javax.swing.SwingUtilities;
 
 public class MainApp {

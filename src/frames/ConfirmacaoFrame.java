@@ -1,11 +1,11 @@
-package Frames;
+package frames;
 
 import javax.swing.*;
 import java.awt.*;
-import transacaosegura.Estabelecimento;
-import transacaosegura.SystemInfo;
-import transacaosegura.Transacao;
-import transacaosegura.Usuario;
+import model.Estabelecimento;
+import util.SystemInfo;
+import model.Transacao;
+import model.Usuario;
 
 public class ConfirmacaoFrame extends JFrame {
     private final Transacao transaction; // Vamos armazenar a transação aqui
