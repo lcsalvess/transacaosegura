@@ -3,28 +3,28 @@ package Frames;
 import javax.swing.*;
 import javax.swing.text.MaskFormatter;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import transacaosegura.PessoaFisica;
 import transacaosegura.PessoaJuridica;
 import transacaosegura.Usuario;
 
 public class CadastroFrame extends JFrame {
-    private JTextField nomeField;
+    private final JTextField nomeField;
     private JTextField celularField;
 
     // Campos para CPF/CNPJ
     private JTextField cpfField;
     private JTextField cnpjField;
-    private JTextField razaoSocialField;
+    private final JTextField razaoSocialField;
 
     // Botões de rádio para escolher o tipo
-    private JRadioButton rbPessoaFisica;
-    private JRadioButton rbPessoaJuridica;
+    private final JRadioButton rbPessoaFisica;
+    private final JRadioButton rbPessoaJuridica;
 
     // Painéis para agrupar campos específicos e controlar visibilidade
-    private JPanel pessoaFisicaPanel;
-    private JPanel pessoaJuridicaPanel;
+    private final JPanel pessoaFisicaPanel;
+    private final JPanel pessoaJuridicaPanel;
 
     public CadastroFrame() {
         setTitle("Cadastro de Usuário");
@@ -42,7 +42,14 @@ public class CadastroFrame extends JFrame {
         nomeField = new JTextField();
         commonPanel.add(nomeField);
         commonPanel.add(new JLabel("Número Celular:"));
-        celularField = new JTextField();
+        // celularField = new JTextField();
+        try {
+            MaskFormatter telefoneMask = new MaskFormatter("(##) #####-####");
+            telefoneMask.setPlaceholderCharacter('_');
+            celularField = new JFormattedTextField(telefoneMask);
+        } catch (java.text.ParseException e) {
+            JOptionPane.showMessageDialog(null, "Erro ao aplicar máscara de telefone!", "Erro", JOptionPane.ERROR_MESSAGE);
+        }
         commonPanel.add(celularField);
         mainPanel.add(commonPanel);
 
@@ -58,7 +65,7 @@ public class CadastroFrame extends JFrame {
         ButtonGroup group = new ButtonGroup(); // Garante que apenas um pode ser selecionado
         group.add(rbPessoaFisica);
         group.add(rbPessoaJuridica);
-        
+
         // Seleciona Pessoa Física por padrão
         rbPessoaFisica.setSelected(true);
 
@@ -97,19 +104,15 @@ public class CadastroFrame extends JFrame {
         mainPanel.add(pessoaJuridicaPanel);
 
         // --- Listener para os botões de rádio (mostrar/esconder campos) ---
-        ActionListener radioListener = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (rbPessoaFisica.isSelected()) {
-                    pessoaFisicaPanel.setVisible(true);
-                    pessoaJuridicaPanel.setVisible(false);
-                } else { // rbPessoaJuridica.isSelected()
-                    pessoaFisicaPanel.setVisible(false);
-                    pessoaJuridicaPanel.setVisible(true);
-                }
-                // Ajusta o tamanho da janela para o novo conteúdo
-                pack(); // Redimensiona a janela para se ajustar aos componentes
+        ActionListener radioListener = e -> {
+            if (rbPessoaFisica.isSelected()) {
+                pessoaFisicaPanel.setVisible(true);
+                pessoaJuridicaPanel.setVisible(false);
+            } else {
+                pessoaFisicaPanel.setVisible(false);
+                pessoaJuridicaPanel.setVisible(true);
             }
+            pack(); //Redimensiona a janela para se ajustar aos componentes
         };
         rbPessoaFisica.addActionListener(radioListener);
         rbPessoaJuridica.addActionListener(radioListener);
@@ -129,41 +132,36 @@ public class CadastroFrame extends JFrame {
 
 
         // --- Ação do botão Cadastrar ---
-        cadastrarBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String nome = nomeField.getText().trim();
-                String celular = celularField.getText().trim();
-                Usuario user = null; // O objeto user será PessoaFisica ou PessoaJuridica
+        cadastrarBtn.addActionListener(e -> {
+            String nome = nomeField.getText().trim();
+            String celular = celularField.getText().replaceAll("\\D", "");
 
-                if (nome.isEmpty() || celular.isEmpty()) {
-                    JOptionPane.showMessageDialog(null, "Nome e Número Celular são obrigatórios!");
-                    return; // Sai da função
-                }
+            if (nome.isEmpty() || celular.length() != 11) {
+                JOptionPane.showMessageDialog(null, "Nome e número de celular são obrigatórios", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
 
-                if (rbPessoaFisica.isSelected()) {
-                    String cpf = cpfField.getText().trim();
-                    if (cpf.isEmpty()) {
-                        JOptionPane.showMessageDialog(null, "CPF é obrigatório para Pessoa Física!");
-                        return;
-                    }
-                    user = new PessoaFisica(nome, celular, cpf);
-                } else { // rbPessoaJuridica.isSelected()
-                    String cnpj = cnpjField.getText().trim();
-                    String razaoSocial = razaoSocialField.getText().trim();
-                    if (cnpj.isEmpty() || razaoSocial.isEmpty()) {
-                        JOptionPane.showMessageDialog(null, "CNPJ e Razão Social são obrigatórios para Pessoa Jurídica!");
-                        return;
-                    }
-                    user = new PessoaJuridica(nome, celular, cnpj, razaoSocial);
+            if (rbPessoaFisica.isSelected()) {
+                String cpf = cpfField.getText().replaceAll("\\D", "");
+                if (cpf.length() != 11) {
+                    JOptionPane.showMessageDialog(null, "CPF deve conter 11 dígitos!", "Erro", JOptionPane.ERROR_MESSAGE);
+                    return;
                 }
-
-                // Se o usuário foi criado com sucesso
-                if (user != null) {
-                    JOptionPane.showMessageDialog(null, "Usuário criado com sucesso!\n" + user.toString());
-                    dispose(); // fecha o frame atual
-                    new ValorCompraFrame(user).setVisible(true); // Abre a próxima tela
+                Usuario user = new PessoaFisica(nome, celular, cpf);
+                JOptionPane.showMessageDialog(null, "Usuário criado com sucesso!\n" + user);
+                dispose();
+                new ValorCompraFrame(user).setVisible(true);
+            } else {
+                String cnpj = cnpjField.getText().replaceAll("\\D", "");
+                String razaoSocial = razaoSocialField.getText().trim();
+                if (cnpj.length() != 14 || razaoSocial.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "CNPJ deve conter 14 dígitos e Razão Social é obrigatória", "Erro", JOptionPane.ERROR_MESSAGE);
+                    return;
                 }
+                Usuario user = new PessoaJuridica(nome, celular, cnpj, razaoSocial);
+                JOptionPane.showMessageDialog(null, "Usuário criado com sucesso!\n" + user);
+                dispose();
+                new ValorCompraFrame(user).setVisible(true);
             }
         });
     }
