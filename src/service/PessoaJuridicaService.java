@@ -17,4 +17,8 @@ public class PessoaJuridicaService {
     public void salvarPessoaJuridica(PessoaJuridica pj) throws SQLException {
         pessoaJuridicaDAO.inserir(pj);
     }
+
+    public PessoaJuridica buscarPorCnpj(String cnpj) throws Exception {
+        return pessoaJuridicaDAO.buscarPorCnpj(cnpj);
+    }
 }

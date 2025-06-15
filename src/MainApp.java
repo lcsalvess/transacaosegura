@@ -1,6 +1,5 @@
 import dao.ConexaoH2;
-import frames.CadastroFrame;
-
+import frames.MenuPrincipalFrame;
 import javax.swing.*;
 import java.sql.Connection;
 
@@ -9,8 +8,8 @@ public class MainApp {
         SwingUtilities.invokeLater(() -> {
             try {
                 Connection conexao = ConexaoH2.getConexao();
-                CadastroFrame frame = new CadastroFrame(conexao);
-                frame.setVisible(true);
+                MenuPrincipalFrame menu = new MenuPrincipalFrame(conexao);
+                menu.setVisible(true);
             } catch (Exception e) {
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(null, "Erro ao conectar ao banco: " + e.getMessage());

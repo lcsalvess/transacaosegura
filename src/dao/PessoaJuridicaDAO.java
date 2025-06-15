@@ -39,4 +39,21 @@ public class PessoaJuridicaDAO {
         }
         return idGerado;
     }
+    public PessoaJuridica buscarPorCnpj(String cnpj) throws SQLException {
+        String sql = "SELECT * FROM pessoa_juridica WHERE cnpj = ?";
+        try (PreparedStatement stmt = conexao.prepareStatement(sql)) {
+            stmt.setString(1, cnpj);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return new PessoaJuridica(
+                        rs.getString("nome"),
+                        rs.getString("celular"),
+                        rs.getString("cnpj"),
+                        rs.getString("razao_social")
+                );
+            }
+            return null;
+        }
+    }
 }

@@ -7,7 +7,7 @@ import java.sql.*;
 public class PessoaFisicaDAO {
     private final Connection conexao;
 
-    public PessoaFisicaDAO(Connection conexao) throws SQLException {
+    public PessoaFisicaDAO(Connection conexao) {
         this.conexao = conexao;
     }
 
@@ -37,5 +37,26 @@ public class PessoaFisicaDAO {
             stmtPF.executeUpdate();
         }
         return idGerado;
+    }
+
+    public PessoaFisica buscarPorCpf(String cpf) throws Exception {
+        String sql = "SELECT u.nome, u.NUMERO_CELULAR, pf.cpf " +
+                "FROM pessoa_fisica pf " +
+                "JOIN usuario u ON pf.ID_USUARIO = u.id " +
+                "WHERE pf.cpf = ?";
+
+        try (PreparedStatement stmt = conexao.prepareStatement(sql)) {
+            stmt.setString(1, cpf);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return new PessoaFisica(
+                        rs.getString("nome"),
+                        rs.getString("numero_celular"),
+                        rs.getString("cpf")
+                );
+            }
+            return null;
+        }
     }
 }

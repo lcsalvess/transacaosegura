@@ -6,6 +6,7 @@ import model.PessoaFisica;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+
 public class PessoaFisicaService {
     private PessoaFisicaDAO dao;
 
@@ -19,6 +20,10 @@ public class PessoaFisicaService {
             throw new IllegalArgumentException("Nome é obrigatório");
         }
         dao.inserir(pf);
+    }
+
+    public PessoaFisica buscarPorCpf(String cpf) throws Exception {
+        return dao.buscarPorCpf(cpf);
     }
 }
 

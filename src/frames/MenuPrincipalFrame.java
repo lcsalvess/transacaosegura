@@ -1,0 +1,80 @@
+package frames;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.sql.Connection;
+
+public class MenuPrincipalFrame extends JFrame {
+    private final Connection conexao;
+
+    public MenuPrincipalFrame(Connection conexao) {
+        this.conexao = conexao;
+
+        setTitle("Menu Principal");
+        setSize(500, 500);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        // Painel com layout vertical
+        JPanel painel = new JPanel();
+        painel.setLayout(new GridLayout(5, 1, 20, 20));
+        painel.setBorder(BorderFactory.createEmptyBorder(40, 40, 40, 40));
+        painel.setBackground(Color.decode("#f0f0f0")); // Fundo suave
+
+        // Botões estilizados
+        JButton btnCadastro = criarBotao("Cadastro");
+        JButton btnConsulta = criarBotao("Consulta");
+        JButton btnAtualizacao = criarBotao("Atualização do Cadastro");
+        JButton btnTransacoes = criarBotao("Transações");
+        JButton btnDeletar = criarBotao("Deletar Cadastro");
+
+
+        // Ações dos botões
+        btnCadastro.addActionListener(this::abrirCadastro);
+        btnConsulta.addActionListener(this::abrirConsulta);
+        btnAtualizacao.addActionListener(e -> JOptionPane.showMessageDialog(this, "Atualização ainda não implementada."));
+        btnTransacoes.addActionListener(e -> JOptionPane.showMessageDialog(this, "Transações ainda não implementada."));
+        btnDeletar.addActionListener(e -> JOptionPane.showMessageDialog(this, "Deleção ainda não implementada."));
+
+
+        // Adiciona ao painel
+        painel.add(btnCadastro);
+        painel.add(btnConsulta);
+        painel.add(btnAtualizacao);
+        painel.add(btnTransacoes);
+        painel.add(btnDeletar);
+
+        add(painel);
+    }
+
+    // Cria botão estilizado
+    private JButton criarBotao(String texto) {
+        JButton botao = new JButton(texto);
+        botao.setFocusPainted(false); // Remove contorno de foco
+        botao.setFont(new Font("Segoe UI", Font.BOLD, 18)); // Fonte moderna e grande
+        botao.setBackground(new Color(76, 175, 80)); // Verde estilizado (#4CAF50)
+        botao.setForeground(Color.WHITE); // Letra branca
+        botao.setBorder(BorderFactory.createLineBorder(new Color(34, 139, 34), 2, true)); // Borda arredondada
+        botao.setCursor(new Cursor(Cursor.HAND_CURSOR)); // Cursor tipo "mão"
+        return botao;
+    }
+
+    private void abrirCadastro(ActionEvent e) {
+        try {
+            new CadastroFrame(conexao).setVisible(true);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Erro ao abrir tela de cadastro: " + ex.getMessage());
+        }
+    }
+
+    private void abrirConsulta(ActionEvent e) {
+        try {
+            new ConsultaCadastroFrame(conexao).setVisible(true);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Erro ao abrir tela de cadastro: " + ex.getMessage());
+        }
+    }
+}
