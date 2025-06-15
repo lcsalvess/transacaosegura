@@ -4,8 +4,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.sql.Connection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MenuPrincipalFrame extends JFrame {
+    private static final Logger logger = Logger.getLogger(MenuPrincipalFrame.class.getName());
     private final Connection conexao;
 
     public MenuPrincipalFrame(Connection conexao) {
@@ -35,7 +38,7 @@ public class MenuPrincipalFrame extends JFrame {
         btnConsulta.addActionListener(this::abrirConsulta);
         btnAtualizacao.addActionListener(this::atualizarCadastro);
         btnTransacoes.addActionListener(e -> JOptionPane.showMessageDialog(this, "Transações ainda não implementada."));
-        btnDeletar.addActionListener(e -> JOptionPane.showMessageDialog(this, "Deleção ainda não implementada."));
+        btnDeletar.addActionListener(this::deletarCadastro);
 
 
         // Adiciona ao painel
@@ -64,7 +67,7 @@ public class MenuPrincipalFrame extends JFrame {
         try {
             new CadastroFrame(conexao).setVisible(true);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            logger.log(Level.SEVERE, "Erro ao abrir tela de cadastro", ex);
             JOptionPane.showMessageDialog(this, "Erro ao abrir tela de cadastro: " + ex.getMessage());
         }
     }
@@ -73,8 +76,8 @@ public class MenuPrincipalFrame extends JFrame {
         try {
             new ConsultaCadastroFrame(conexao).setVisible(true);
         } catch (Exception ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Erro ao abrir tela de cadastro: " + ex.getMessage());
+            logger.log(Level.SEVERE, "Erro ao abrir tela de consulta", ex);
+            JOptionPane.showMessageDialog(this, "Erro ao abrir tela de consulta: " + ex.getMessage());
         }
     }
 
@@ -82,8 +85,16 @@ public class MenuPrincipalFrame extends JFrame {
         try {
             new AtualizarCadastroFrame(conexao).setVisible(true);
         } catch (Exception ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Erro ao abrir tela de cadastro: " + ex.getMessage());
+            logger.log(Level.SEVERE, "Erro ao abrir tela de atualização", ex);
+            JOptionPane.showMessageDialog(this, "Erro ao abrir tela de atualização: " + ex.getMessage());
+        }
+    }
+    private void deletarCadastro(ActionEvent e) {
+        try {
+            new DeletarCadastroFrame(conexao).setVisible(true);
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, "Erro ao abrir tela de deletar cadastro", ex);
+            JOptionPane.showMessageDialog(this, "Erro ao abrir tela de deletar cadastro: " + ex.getMessage());
         }
     }
 }

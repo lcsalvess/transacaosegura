@@ -25,4 +25,8 @@ public class PessoaJuridicaService {
     public void atualizarPessoaJuridica(PessoaJuridica pj) throws SQLException {
         pessoaJuridicaDAO.atualizar(pj);
     }
+
+    public void deletarPorCnpj(String cnpj) throws SQLException {
+        pessoaJuridicaDAO.deletarPorCnpj(cnpj);
+    }
 }

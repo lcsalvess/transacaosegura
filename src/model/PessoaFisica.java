@@ -7,6 +7,11 @@ public class PessoaFisica extends Usuario { // PessoaFisica "é um" Usuario
         super(nome, numeroCelular); // Chama o construtor da classe Usuario
         this.cpf = cpf;
     }
+
+    public PessoaFisica() {
+        super();
+    }
+
     public void setId(int id) {
         super.setId(id); // Chama o metodo setId da classe Usuario
     }

@@ -59,6 +59,7 @@ public class PessoaFisicaDAO {
             return null;
         }
     }
+
     public void atualizar(PessoaFisica pf) throws SQLException {
         // Primeiro, recuperar o ID do usuário com base no CPF
         String sqlBuscarId = "SELECT id_usuario FROM pessoa_fisica WHERE cpf = ?";
@@ -88,4 +89,33 @@ public class PessoaFisicaDAO {
         }
     }
 
+    public void deletarPorCpf(PessoaFisica pf) throws SQLException {
+        // Buscar o ID do usuário pelo CPF
+        String sqlBuscarId = "SELECT id_usuario FROM pessoa_fisica WHERE cpf = ?";
+        int idUsuario;
+
+        try (PreparedStatement stmtBuscar = conexao.prepareStatement(sqlBuscarId)) {
+            stmtBuscar.setString(1, pf.getCpf());
+            ResultSet rs = stmtBuscar.executeQuery();
+            if (rs.next()) {
+                idUsuario = rs.getInt("id_usuario");
+            } else {
+                throw new SQLException("CPF não encontrado.");
+            }
+        }
+
+        // Deletar da tabela pessoa_fisica
+        String sqlDeletarPF = "DELETE FROM pessoa_fisica WHERE cpf = ?";
+        try (PreparedStatement stmtPF = conexao.prepareStatement(sqlDeletarPF)) {
+            stmtPF.setString(1, pf.getCpf());
+            stmtPF.executeUpdate();
+        }
+
+        // Deletar da tabela usuario
+        String sqlDeletarUsuario = "DELETE FROM usuario WHERE id = ?";
+        try (PreparedStatement stmtUsuario = conexao.prepareStatement(sqlDeletarUsuario)) {
+            stmtUsuario.setInt(1, idUsuario);
+            stmtUsuario.executeUpdate();
+        }
+    }
 }

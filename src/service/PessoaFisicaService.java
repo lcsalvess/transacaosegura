@@ -35,5 +35,9 @@ public class PessoaFisicaService {
         }
         dao.atualizar(pf);
     }
+
+    public void deletarPorCpf(PessoaFisica pf) throws SQLException {
+        dao.deletarPorCpf(pf);
+    }
 }
 

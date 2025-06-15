@@ -40,7 +40,10 @@ public class PessoaJuridicaDAO {
         return idGerado;
     }
     public PessoaJuridica buscarPorCnpj(String cnpj) throws SQLException {
-        String sql = "SELECT * FROM pessoa_juridica WHERE cnpj = ?";
+        String sql = "SELECT u.nome, u.numero_celular, pj.cnpj, pj.razao_social " +
+                "FROM pessoa_juridica pj " +
+                "JOIN usuario u ON pj.id_usuario = u.id " +
+                "WHERE pj.cnpj = ?";
         try (PreparedStatement stmt = conexao.prepareStatement(sql)) {
             stmt.setString(1, cnpj);
             ResultSet rs = stmt.executeQuery();
@@ -48,7 +51,7 @@ public class PessoaJuridicaDAO {
             if (rs.next()) {
                 return new PessoaJuridica(
                         rs.getString("nome"),
-                        rs.getString("celular"),
+                        rs.getString("numero_celular"),
                         rs.getString("cnpj"),
                         rs.getString("razao_social")
                 );
@@ -86,6 +89,35 @@ public class PessoaJuridicaDAO {
             stmtAtualizarPJ.setString(1, pj.getRazaoSocial());
             stmtAtualizarPJ.setString(2, pj.getCnpj());
             stmtAtualizarPJ.executeUpdate();
+        }
+    }
+    public void deletarPorCnpj(String cnpj) throws SQLException {
+        // Buscar o ID do usuário pelo CNPJ
+        String sqlBuscarId = "SELECT id_usuario FROM pessoa_juridica WHERE cnpj = ?";
+        int idUsuario;
+
+        try (PreparedStatement stmtBuscar = conexao.prepareStatement(sqlBuscarId)) {
+            stmtBuscar.setString(1, cnpj);
+            ResultSet rs = stmtBuscar.executeQuery();
+            if (rs.next()) {
+                idUsuario = rs.getInt("id_usuario");
+            } else {
+                throw new SQLException("CNPJ não encontrado.");
+            }
+        }
+
+        // Deletar da tabela pessoa_juridica
+        String sqlDeletarPJ = "DELETE FROM pessoa_juridica WHERE cnpj = ?";
+        try (PreparedStatement stmtPJ = conexao.prepareStatement(sqlDeletarPJ)) {
+            stmtPJ.setString(1, cnpj);
+            stmtPJ.executeUpdate();
+        }
+
+        // Deletar da tabela usuario
+        String sqlDeletarUsuario = "DELETE FROM usuario WHERE id = ?";
+        try (PreparedStatement stmtUsuario = conexao.prepareStatement(sqlDeletarUsuario)) {
+            stmtUsuario.setInt(1, idUsuario);
+            stmtUsuario.executeUpdate();
         }
     }
 }
