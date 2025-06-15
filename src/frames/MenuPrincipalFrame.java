@@ -108,10 +108,10 @@ public class MenuPrincipalFrame extends JFrame {
                     JOptionPane.ERROR_MESSAGE);
         }
     }
-
     private void deletarCadastro(ActionEvent e) {
         try {
-            new DeletarCadastroFrame(conexao).setVisible(true);
+            UsuarioService usuarioService = new UsuarioService(conexao);
+            new DeletarCadastroFrame(conexao, usuarioService).setVisible(true);
         } catch (Exception ex) {
             logger.log(Level.SEVERE, "Erro ao abrir tela de deletar cadastro", ex);
             JOptionPane.showMessageDialog(this, "Erro ao abrir tela de deletar cadastro: " + ex.getMessage());

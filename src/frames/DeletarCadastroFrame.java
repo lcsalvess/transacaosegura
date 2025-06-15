@@ -4,6 +4,7 @@ import model.PessoaFisica;
 import model.PessoaJuridica;
 import service.PessoaFisicaService;
 import service.PessoaJuridicaService;
+import service.UsuarioService;
 
 import javax.swing.*;
 import javax.swing.text.MaskFormatter;
@@ -31,7 +32,10 @@ public class DeletarCadastroFrame extends JFrame {
 
     private final JButton deletarButton;
 
-    public DeletarCadastroFrame(Connection conexao) throws SQLException {
+    private final UsuarioService usuarioService;
+
+    public DeletarCadastroFrame(Connection conexao, UsuarioService usuarioService) throws SQLException {
+        this.usuarioService = usuarioService;
         this.pfService = new PessoaFisicaService(conexao);
         this.pjService = new PessoaJuridicaService(conexao);
 
@@ -113,15 +117,13 @@ public class DeletarCadastroFrame extends JFrame {
                 }
 
                 int confirm = JOptionPane.showConfirmDialog(this,
-                        "Você tem certeza que deseja deletar o usuário: " + pf.getNome() + "?",
+                        "Você tem certeza que deseja desativar o usuário: " + pf.getNome() + "?",
                         "Confirmação",
                         JOptionPane.YES_NO_OPTION);
 
                 if (confirm == JOptionPane.YES_OPTION) {
-                    PessoaFisica pfParaDeletar = new PessoaFisica();
-                    pfParaDeletar.setCpf(cpf);
-                    pfService.deletarPorCpf(pfParaDeletar);
-                    JOptionPane.showMessageDialog(this, "Pessoa Física deletada com sucesso!");
+                    usuarioService.desativarUsuarioPorCpfOuCnpj(cpf);
+                    JOptionPane.showMessageDialog(this, "Pessoa Física desativada com sucesso!");
                 }
 
             } else {
@@ -138,19 +140,19 @@ public class DeletarCadastroFrame extends JFrame {
                 }
 
                 int confirm = JOptionPane.showConfirmDialog(this,
-                        "Você tem certeza que deseja deletar a empresa: " + pj.getRazaoSocial() + "?",
+                        "Você tem certeza que deseja desativar a empresa: " + pj.getRazaoSocial() + "?",
                         "Confirmação",
                         JOptionPane.YES_NO_OPTION);
 
                 if (confirm == JOptionPane.YES_OPTION) {
-                    pjService.deletarPorCnpj(cnpj);
-                    JOptionPane.showMessageDialog(this, "Pessoa Jurídica deletada com sucesso!");
+                    usuarioService.desativarUsuarioPorCpfOuCnpj(cnpj);
+                    JOptionPane.showMessageDialog(this, "Pessoa Jurídica desativada com sucesso!");
                 }
             }
 
         } catch (Exception ex) {
-            logger.log(Level.SEVERE, "Erro ao deletar", ex);
-            JOptionPane.showMessageDialog(this, "Erro ao deletar: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+            logger.log(Level.SEVERE, "Erro ao desativar", ex);
+            JOptionPane.showMessageDialog(this, "Erro ao desativar: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
 

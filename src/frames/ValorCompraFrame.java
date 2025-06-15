@@ -4,9 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 
 import controller.TransacaoController;
-import model.Estabelecimento;
-import util.SystemInfo;
-import model.Transacao;
 import model.Usuario;
 import util.FormatadorNumerico;
 

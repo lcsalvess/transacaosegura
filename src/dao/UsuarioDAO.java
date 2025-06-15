@@ -31,4 +31,15 @@ public class UsuarioDAO {
         }
         return null; // não encontrado
     }
+
+    public void desativarUsuario(Integer idUsuario) throws SQLException {
+        String sql = "UPDATE usuario SET ativo = FALSE WHERE id = ?";
+        try (PreparedStatement stmt = conexao.prepareStatement(sql)) {
+            stmt.setInt(1, idUsuario);
+            int linhasAfetadas = stmt.executeUpdate();
+            if (linhasAfetadas == 0) {
+                throw new SQLException("Usuário com id " + idUsuario + " não encontrado.");
+            }
+        }
+    }
 }

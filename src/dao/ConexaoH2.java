@@ -1,6 +1,5 @@
 package dao;
 
-import org.h2.tools.Server;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

@@ -3,11 +3,10 @@ package service;
 import dao.PessoaFisicaDAO;
 import dao.PessoaJuridicaDAO;
 import dao.UsuarioDAO;
-import model.PessoaFisica;
-import model.PessoaJuridica;
 import model.Usuario;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 
 public class UsuarioService {
 
@@ -38,5 +37,18 @@ public class UsuarioService {
 
         // Se não encontrou em nenhuma das duas tabelas
         return null;
+    }
+
+    public void desativarUsuarioPorCpfOuCnpj(String cpfOuCnpj) throws SQLException {
+        Integer idUsuario = pessoaFisicaDAO.buscarIdPorCpf(cpfOuCnpj);
+        if (idUsuario == null) {
+            idUsuario = pessoaJuridicaDAO.buscarIdPorCnpj(cpfOuCnpj);
+        }
+
+        if (idUsuario != null) {
+            usuarioDAO.desativarUsuario(idUsuario);
+        } else {
+            throw new IllegalArgumentException("Usuário não encontrado para o CPF/CNPJ informado.");
+        }
     }
 }
