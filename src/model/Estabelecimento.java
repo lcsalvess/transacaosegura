@@ -18,6 +18,10 @@ public class Estabelecimento {
         this.idMaquina = idMaquina;
     }
 
+    public Estabelecimento() {
+
+    }
+
     public void setIdMaquina(Integer idMaquina) {
         this.idMaquina = idMaquina;
     }

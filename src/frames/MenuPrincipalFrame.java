@@ -1,9 +1,14 @@
 package frames;
 
+import controller.TransacaoController;
+import model.Usuario;
+import service.UsuarioService;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,7 +42,7 @@ public class MenuPrincipalFrame extends JFrame {
         btnCadastro.addActionListener(this::abrirCadastro);
         btnConsulta.addActionListener(this::abrirConsulta);
         btnAtualizacao.addActionListener(this::atualizarCadastro);
-        btnTransacoes.addActionListener(e -> JOptionPane.showMessageDialog(this, "Transações ainda não implementada."));
+        btnTransacoes.addActionListener(this::abrirTransacoes);
         btnDeletar.addActionListener(this::deletarCadastro);
 
 
@@ -89,6 +94,21 @@ public class MenuPrincipalFrame extends JFrame {
             JOptionPane.showMessageDialog(this, "Erro ao abrir tela de atualização: " + ex.getMessage());
         }
     }
+
+    private void abrirTransacoes(ActionEvent e) {
+        try {
+            UsuarioService usuarioService = new UsuarioService(conexao);
+            TransacaoController transacaoController = new TransacaoController(conexao, usuarioService);
+            transacaoController.iniciarFluxo();
+        } catch (SQLException ex) {
+            logger.log(Level.SEVERE, "Erro ao iniciar transação", ex);
+            JOptionPane.showMessageDialog(this,
+                    "Erro ao iniciar transação: " + ex.getMessage(),
+                    "Erro",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     private void deletarCadastro(ActionEvent e) {
         try {
             new DeletarCadastroFrame(conexao).setVisible(true);

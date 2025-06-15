@@ -89,6 +89,19 @@ public class PessoaFisicaDAO {
         }
     }
 
+    public Integer buscarIdPorCpf(String cpf) throws SQLException {
+        String sql = "SELECT id_usuario FROM pessoa_fisica WHERE cpf = ?";
+        try (PreparedStatement stmt = conexao.prepareStatement(sql)) {
+            stmt.setString(1, cpf);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("id_usuario");
+                }
+                return null; // não encontrado
+            }
+        }
+    }
+
     public void deletarPorCpf(PessoaFisica pf) throws SQLException {
         // Buscar o ID do usuário pelo CPF
         String sqlBuscarId = "SELECT id_usuario FROM pessoa_fisica WHERE cpf = ?";

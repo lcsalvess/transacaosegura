@@ -2,15 +2,18 @@ package frames;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.function.Consumer;
+
 import model.Estabelecimento;
 import util.SystemInfo;
 import model.Transacao;
 import model.Usuario;
 
-public class ConfirmacaoFrame extends JFrame {
+public class ConfirmarTransacaoFrame extends JFrame {
     private final Transacao transaction; // Vamos armazenar a transação aqui
+    private final Consumer<Boolean> callback; // Callback para retornar o resultado da confirmação
 
-    public ConfirmacaoFrame(Usuario user, double valorCompra) {
+    public ConfirmarTransacaoFrame(Usuario user, double valorCompra, Consumer<Boolean> callback){
         String nomeEstabelecimento = SystemInfo.getNomeComputador();
         // Criamos uma instância de Estabelecimento. Em um sistema real, viria de um DB.
         Estabelecimento estabelecimento = new Estabelecimento(nomeEstabelecimento);
@@ -18,6 +21,7 @@ public class ConfirmacaoFrame extends JFrame {
         // Criamos a transação com status PENDENTE inicialmente
         // O "id" da transação agora é gerado dentro da própria classe Transacao
         this.transaction = new Transacao(user.getId(), valorCompra, estabelecimento);
+        this.callback = callback;
 
         String localizacao = "Localização aproximada não disponível"; // Placeholder por enquanto
 
@@ -75,6 +79,7 @@ public class ConfirmacaoFrame extends JFrame {
         // Ação do botão "Reconheço"
         btnReconheco.addActionListener(e -> {
             transaction.setStatus(Transacao.Status.APROVADA);
+            callback.accept(true); // Chama o callback com sucesso
             JOptionPane.showMessageDialog(this, "Compra realizada com sucesso!\nDetalhes: " + transaction, "Sucesso!", JOptionPane.INFORMATION_MESSAGE);
             dispose();
             System.exit(0);
@@ -83,6 +88,7 @@ public class ConfirmacaoFrame extends JFrame {
         // Ação do botão "Não Reconheço"
         btnNaoReconheco.addActionListener(e -> {
             transaction.setStatus(Transacao.Status.RECUSADA);
+            callback.accept(false);
             JOptionPane.showMessageDialog(this, "Compra recusada!\nDetalhes: " + transaction, "Atenção!", JOptionPane.WARNING_MESSAGE);
             dispose();
             System.exit(0);

@@ -1,5 +1,7 @@
 import dao.ConexaoH2;
 import frames.MenuPrincipalFrame;
+import model.Usuario;
+
 import javax.swing.*;
 import java.sql.Connection;
 

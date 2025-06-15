@@ -39,5 +39,9 @@ public class PessoaFisicaService {
     public void deletarPorCpf(PessoaFisica pf) throws SQLException {
         dao.deletarPorCpf(pf);
     }
+
+    public Integer buscarIdPorCpf(String cpf) throws SQLException {
+        return dao.buscarIdPorCpf(cpf);
+    }
 }
 

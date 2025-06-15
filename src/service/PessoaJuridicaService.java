@@ -29,4 +29,8 @@ public class PessoaJuridicaService {
     public void deletarPorCnpj(String cnpj) throws SQLException {
         pessoaJuridicaDAO.deletarPorCnpj(cnpj);
     }
+
+    public Integer buscarIdPorCnpj(String cnpj) throws SQLException {
+        return pessoaJuridicaDAO.buscarIdPorCnpj(cnpj);
+    }
 }

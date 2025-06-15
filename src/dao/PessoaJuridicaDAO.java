@@ -59,6 +59,19 @@ public class PessoaJuridicaDAO {
             return null;
         }
     }
+    public Integer buscarIdPorCnpj(String cnpj) throws SQLException {
+        String sql = "SELECT id_usuario FROM pessoa_juridica WHERE cnpj = ?";
+        try (PreparedStatement stmt = conexao.prepareStatement(sql)) {
+            stmt.setString(1, cnpj);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("id_usuario");
+                } else {
+                    return null; // Não encontrou
+                }
+            }
+        }
+    }
 
     public void atualizar(PessoaJuridica pj) throws SQLException {
         // Primeiro, recuperar o ID do usuário com base no CNPJ
