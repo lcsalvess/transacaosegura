@@ -33,7 +33,7 @@ public class MenuPrincipalFrame extends JFrame {
         // Ações dos botões
         btnCadastro.addActionListener(this::abrirCadastro);
         btnConsulta.addActionListener(this::abrirConsulta);
-        btnAtualizacao.addActionListener(e -> JOptionPane.showMessageDialog(this, "Atualização ainda não implementada."));
+        btnAtualizacao.addActionListener(this::atualizarCadastro);
         btnTransacoes.addActionListener(e -> JOptionPane.showMessageDialog(this, "Transações ainda não implementada."));
         btnDeletar.addActionListener(e -> JOptionPane.showMessageDialog(this, "Deleção ainda não implementada."));
 
@@ -72,6 +72,15 @@ public class MenuPrincipalFrame extends JFrame {
     private void abrirConsulta(ActionEvent e) {
         try {
             new ConsultaCadastroFrame(conexao).setVisible(true);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Erro ao abrir tela de cadastro: " + ex.getMessage());
+        }
+    }
+
+    private void atualizarCadastro(ActionEvent e) {
+        try {
+            new AtualizarCadastroFrame(conexao).setVisible(true);
         } catch (Exception ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this, "Erro ao abrir tela de cadastro: " + ex.getMessage());

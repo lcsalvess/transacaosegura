@@ -25,5 +25,15 @@ public class PessoaFisicaService {
     public PessoaFisica buscarPorCpf(String cpf) throws Exception {
         return dao.buscarPorCpf(cpf);
     }
+
+    public void atualizar(PessoaFisica pf) throws SQLException {
+        if (pf.getCpf() == null || pf.getCpf().isEmpty()) {
+            throw new IllegalArgumentException("CPF é obrigatório para atualizar");
+        }
+        if (pf.getNome() == null || pf.getNome().isEmpty()) {
+            throw new IllegalArgumentException("Nome é obrigatório");
+        }
+        dao.atualizar(pf);
+    }
 }
 

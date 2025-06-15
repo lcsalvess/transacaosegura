@@ -3,7 +3,7 @@ import frames.MenuPrincipalFrame;
 import javax.swing.*;
 import java.sql.Connection;
 
-public class MainApp {
+public class Main {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             try {

@@ -21,4 +21,8 @@ public class PessoaJuridicaService {
     public PessoaJuridica buscarPorCnpj(String cnpj) throws Exception {
         return pessoaJuridicaDAO.buscarPorCnpj(cnpj);
     }
+
+    public void atualizarPessoaJuridica(PessoaJuridica pj) throws SQLException {
+        pessoaJuridicaDAO.atualizar(pj);
+    }
 }

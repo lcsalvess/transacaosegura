@@ -56,4 +56,36 @@ public class PessoaJuridicaDAO {
             return null;
         }
     }
+
+    public void atualizar(PessoaJuridica pj) throws SQLException {
+        // Primeiro, recuperar o ID do usuário com base no CNPJ
+        String sqlBuscarId = "SELECT id_usuario FROM pessoa_juridica WHERE cnpj = ?";
+        int idUsuario;
+
+        try (PreparedStatement stmtBuscar = conexao.prepareStatement(sqlBuscarId)) {
+            stmtBuscar.setString(1, pj.getCnpj());
+            ResultSet rs = stmtBuscar.executeQuery();
+            if (rs.next()) {
+                idUsuario = rs.getInt("id_usuario");
+            } else {
+                throw new SQLException("CNPJ não encontrado.");
+            }
+        }
+
+        // Agora, atualizar os dados na tabela usuario
+        String sqlAtualizarUsuario = "UPDATE usuario SET numero_celular = ? WHERE id = ?";
+        try (PreparedStatement stmtAtualizarUsuario = conexao.prepareStatement(sqlAtualizarUsuario)) {
+            stmtAtualizarUsuario.setString(1, pj.getNumeroCelular());
+            stmtAtualizarUsuario.setInt(2, idUsuario);
+            stmtAtualizarUsuario.executeUpdate();
+        }
+
+        // E atualizar a razão social na tabela pessoa_juridica
+        String sqlAtualizarPJ = "UPDATE pessoa_juridica SET razao_social = ? WHERE cnpj = ?";
+        try (PreparedStatement stmtAtualizarPJ = conexao.prepareStatement(sqlAtualizarPJ)) {
+            stmtAtualizarPJ.setString(1, pj.getRazaoSocial());
+            stmtAtualizarPJ.setString(2, pj.getCnpj());
+            stmtAtualizarPJ.executeUpdate();
+        }
+    }
 }

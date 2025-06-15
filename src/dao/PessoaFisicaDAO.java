@@ -59,4 +59,33 @@ public class PessoaFisicaDAO {
             return null;
         }
     }
+    public void atualizar(PessoaFisica pf) throws SQLException {
+        // Primeiro, recuperar o ID do usuário com base no CPF
+        String sqlBuscarId = "SELECT id_usuario FROM pessoa_fisica WHERE cpf = ?";
+        int idUsuario;
+
+        try (PreparedStatement stmtBuscar = conexao.prepareStatement(sqlBuscarId)) {
+            stmtBuscar.setString(1, pf.getCpf());
+            ResultSet rs = stmtBuscar.executeQuery();
+            if (rs.next()) {
+                idUsuario = rs.getInt("id_usuario");
+            } else {
+                throw new SQLException("CPF não encontrado.");
+            }
+        }
+
+        // Agora, atualizar os dados na tabela usuario
+        String sqlAtualizarUsuario = "UPDATE usuario SET nome = ?, numero_celular = ? WHERE id = ?";
+        try (PreparedStatement stmtAtualizar = conexao.prepareStatement(sqlAtualizarUsuario)) {
+            stmtAtualizar.setString(1, pf.getNome());
+            stmtAtualizar.setString(2, pf.getNumeroCelular());
+            stmtAtualizar.setInt(3, idUsuario);
+            int linhasAfetadas = stmtAtualizar.executeUpdate();
+
+            if (linhasAfetadas == 0) {
+                throw new SQLException("Falha ao atualizar os dados. Nenhum registro afetado.");
+            }
+        }
+    }
+
 }

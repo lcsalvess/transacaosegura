@@ -7,6 +7,8 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import model.PessoaFisica;
 import model.PessoaJuridica;
@@ -16,6 +18,7 @@ import util.RazaoSocialFilter;
 import util.SomenteLetrasFilter;
 
 public class CadastroFrame extends JFrame {
+    private static final Logger logger = Logger.getLogger(CadastroFrame.class.getName());
     private final Connection conexao;
     private final JTextField nomeField;
     private final JTextField celularField;
@@ -125,7 +128,7 @@ public class CadastroFrame extends JFrame {
             try {
                 cadastrarUsuario();
             } catch (Exception ex) {
-                ex.printStackTrace();
+                logger.log(Level.SEVERE, "Erro ao cadastrar usuário", ex);
                 JOptionPane.showMessageDialog(this, "Erro ao cadastrar usuário: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
             }
         });
